@@ -25,11 +25,16 @@ public class JournalEntryService {
 
     @Transactional
     public void saveEntry(JournalEntry journalentry, String userName ){
-        User user = userService.findByUserName(userName);
-        journalentry.setDate(LocalDateTime.now());
-        JournalEntry savedJournalEntry= journalEntryRepository.save(journalentry);
-        user.getJournalEntries().add(savedJournalEntry);
-        userService.saveUser(user);
+        try {
+            User user = userService.findByUserName(userName);
+            journalentry.setDate(LocalDateTime.now());
+            JournalEntry savedJournalEntry = journalEntryRepository.save(journalentry);
+            user.getJournalEntries().add(savedJournalEntry);
+            userService.saveUser(user);
+        }catch (Exception e){
+            System.out.println(e);
+            throw new RuntimeException("An error occurred while saving entry. ",e);
+        }
     }
 
     public void saveEntry(JournalEntry journalentry){
